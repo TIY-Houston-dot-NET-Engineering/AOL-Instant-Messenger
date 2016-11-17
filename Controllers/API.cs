@@ -2,25 +2,25 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-[Route("/api/card")]
-public class CardController : CRUDController<Card> {
-    public CardController(IRepository<Card> r) : base(r){}
+[Route("/api/user")]
+public class UserController : CRUDController<User> {
+    public UserController(IRepository<User> r) : base(r){}
 
     [HttpGet("search")]
     public IActionResult Search([FromQuery]string term, int listId = -1){
-        return Ok(r.Read(dbset => dbset.Where(card => 
-            card.Title.ToLower().IndexOf(term.ToLower()) != -1
-            || card.Text.ToLower().IndexOf(term.ToLower()) != -1
+        return Ok(r.Read(dbset => dbset.Where(user => 
+            user.Name.ToLower().IndexOf(term.ToLower()) != -1
+            || user.tagLine.ToLower().IndexOf(term.ToLower()) != -1
         )));
     }
 }
 
-[Route("/api/cardlist")]
-public class CardListController : CRUDController<CardList> {
-    public CardListController(IRepository<CardList> r) : base(r){}
+[Route("/api/message")]
+public class MessageController : CRUDController<Message> {
+    public MessageController(IRepository<Message> r) : base(r){}
 }
 
-[Route("/api/board")]
-public class BoardController : CRUDController<Board> {
-    public BoardController(IRepository<Board> r) : base(r){}
+[Route("/api/room")]
+public class RoomController : CRUDController<Room> {
+    public RoomController(IRepository<Room> r) : base(r){}
 }
