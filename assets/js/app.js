@@ -31,8 +31,8 @@ const post = (url, data) =>
 const Nav = () => 
     <nav className="pt-navbar pt-dark pt-fixed-top">
         <div className="pt-navbar-group pt-align-left">
-            <div className="pt-navbar-heading">Blueprint</div>
-            <input className="pt-input" placeholder="Search files..." type="text" />
+            <div className="pt-navbar-heading">AOL Msngr</div>
+            <input className="pt-input" placeholder="Search rooms..." type="text" />
         </div>
         <div className="pt-navbar-group pt-align-right">
             <button className="pt-button pt-minimal pt-icon-home">Home</button>
@@ -51,53 +51,29 @@ const Breadcrumbs = () =>
         )}
     </ul>
 
-const Card = ({title="IM DA BOSS", message="and you ain't", url="#"}) => 
+const LogIn = ({title="", message="", inputName = "", inputPass = ""}) => 
     <div className="pt-card pt-elevation-1 pt-interactive">
-        <h5><a href={url}>{title}</a></h5>
+        <h5>{title}</h5>
         <p>{message}</p>
+        <input type="text" class="pt-input" placeholder="Username" />
+        <input type="password" class="pt-input" placeholder="Password" />
+        <button class="pt-button pt-large pt-intent-primary">Login</button>
     </div>
 
-const Table = () => 
-    <table className="pt-table pt-interactive pt-bordered">
-        <thead>
-            <th>Project</th>
-            <th>Description</th>
-            <th>Technologies</th>
-        </thead>
-        <tbody>
-            <tr>
-            <td>Blueprint</td>
-            <td>CSS framework and UI toolkit</td>
-            <td>Sass, TypeScript, React</td>
-            </tr>
-            <tr>
-            <td>TSLint</td>
-            <td>Static analysis linter for TypeScript</td>
-            <td>TypeScript</td>
-            </tr>
-            <tr>
-            <td>Plottable</td>
-            <td>Composable charting library built on top of D3</td>
-            <td>SVG, TypeScript, D3</td>
-            </tr>
-        </tbody>
-    </table>
 
 const Home = () => 
     <div>
         <Nav />
         <Breadcrumbs />
         <hr />
-        <div className="grid grid-3-600">
-            {[
-                {title: "TEST TITLE", message: "TEST MESSAGE"},
-                {title: "TEST TITLE", message: "TEST MESSAGE"},
-                {title: "TEST TITLE", message: "TEST MESSAGE"}
-            ].map(x => [<Card {...x} />, " "] )}
-        </div>
         <div className="grid">
-            <Table />
+            {[
+                {title: "Welcome", message: "Please Login, Sweetcheeks", inputName: "Ted", inputPass: "dick"}
+                
+            ].map(x => [<LogIn {...x} />, " "] )}
         </div>
+        
+        
     </div>
 
 const reactApp = () => 
