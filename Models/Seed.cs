@@ -16,7 +16,11 @@ public static class Seed
         }
         if(mustMigrate) db.Database.Migrate();
         
-        // if(db.Cards.Any() || db.CardLists.Any()) return;
-        // db.Table.Add(...) / SaveChanges()
+        if(db.Rooms.Any()) return;
+        var m = new Message { Text = "Hi", User = new User { Name = "Matt" } };
+        var b = new Room { Name = "TIY Houston" };
+        b.Messages.Add(m);
+        db.Rooms.Add(b);
+        db.SaveChanges();
     }
 }

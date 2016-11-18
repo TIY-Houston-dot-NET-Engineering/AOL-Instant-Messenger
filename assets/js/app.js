@@ -5,16 +5,31 @@ import React, {Component} from 'react'
 import {render} from 'react-dom'
 import { Router, Route, Link, browserHistory, hashHistory } from 'react-router'
 
-// Utility methods
-// --------------
+// const getMessage = async (id) => {
+//     let response = await fetch(`/api/message/${id}`)
+//     let data = await response.json()
+    
+//     console.log(data)
+// }
+
+// const app = () => {
+//     getMessage(4);
+// }
+
+// app();
+
 const log = (...a) => console.log(...a)
 
 const get = (url) =>
     fetch(url, {credentials: 'same-origin'})
     .then(r => {
-        return r.json()
+        if (r.status === 200) return r.json()
+
+        throw 403
     })
-    .catch(e => log(e))
+    .catch(e => {
+        if(e === 403) window.location.hash = "#login"
+    })
 
 const post = (url, data) => 
     fetch(url, { 
@@ -25,123 +40,142 @@ const post = (url, data) =>
     })
     .catch(e => log(e))
     .then(r => r.json())
-// ----------------
 
-const Tweet = (tweet) => 
-    <a className="tweet" href={`#/status/${tweet.id}`}>
-        <p>{tweet.text}</p>
-        <span>{tweet.user}</span>
-    </a>
+const room = x =>
+    <Link to={`/room/${x.id}`} className="room">
+        <p>{x.name}</p>
+    </Link>
 
+
+
+const Menu = () => <div>
+    <a href="#">Home</a>
+</div>
 class Home extends Component {
-    constructor(props){
-        super(props)
+    constructor(p){
+        super(p)
         this.state = {
-            items: []
+            room: []
         }
     }
-    componentDidMount(){
-        get('/api/tweet').then(tweets => {
-            tweets = tweets.reverse()
-            this.setState({items: tweets})
-        }).catch(e => log(e))
+    componentDidMount() {
+        get(`/api/room`).then(rooms => this.setState({rooms}))
+    }
+    submit(e) {
+        e.preventDefault();
+        post('/api/room', { name: this.refs.name.value })
+            .then(x => {
+                const {rooms} = this.state
+                rooms.push(x)
+                this.setState({room})
+            })
+            .catch(e => log(e))
     }
     render(){
-        return <div className="grid grid-3-600">
-            {this.state.items.map(Tweet)}
-        </div>
-    }
-}
-
-class TweetPage extends Component {
-    constructor(props){
-        super(props)
-        this.state = { id: props.params.id } 
-    }
-    componentDidMount(){
-        get('/api/tweet/'+this.state.id).then(x => {
-            this.setState({ item: x })
-        })
-    }
-    render() {
-        const item = this.state.item
-        if(!item)
-            return <div/>
-
-        return <div className="tweet">
-            <h5>{item.user}</h5>
+        return <div>
+            <Menu />
             <hr/>
-            <p>{item.text}</p>
+            <form onSubmit={e => this.submit(e)}>
+                <div>
+                    <label htmlFor="name">Name of new Room</label>
+                    <input ref="name" type="text" id="name" placeholder="Type a name of the new Room" />
+                </div>
+                <button type="submit">Send</button>
+            </form>
+            <hr/>
+            <div>
+                {this.state.rooms.map(room)}
+            </div>
         </div>
     }
 }
 
-const Layout = ({children}) => 
-    <div>
-        <div className="menu">
-            <h6>Matter</h6>
-            <a href="#/compose" className="compose-button"/>
-        </div>
-        {children}
-    </div>
+const message = m =>
+    <li>{m.text} - <em>{m.user.name}</em></li>
 
-const Error = () => <div>Page Not Found</div>
-
-class ComposePage extends Component {
-    constructor(props){
-        super(props)
-        this.state = {}
+class Room extends Component {
+    constructor(p){
+        super(p)
+        this.state = { room: {} }
+    }
+    componentDidMount() {
+        get(`/api/room/${this.props.params.roomId}`)
+            .then(room => this.setState({room}))
     }
     submit(e){
         e.preventDefault()
-        post('/api/tweet', {
-            text: this.refs.text.value,
-            user: this.refs.user.value
-        }).then(x => {
-            if(!x.errors) window.location.hash = `#/status/${x.id}`
-
-            this.setState({ errors: x.errors })
-        }).catch(e => alert(e))
+        post('/api/message', { text: this.refs.message.value, roomid: this.state.room.id, user: { name: 'gaucho' } })
+            .then(x => {
+                const {room} = this.state
+                room.messages.push(x)
+                this.setState({room})
+            })
+            .catch(e => alert(e))
     }
     render(){
-        var err 
-        if(this.state.errors){
-            err = <ul className="compose-errors">
-                    {this.state.errors.map(x => <li>{x}</li>)}
-                </ul>
-        }
-
-        return <form className="compose-screen" onSubmit={e => this.submit(e)}>
-
-            {this.state.errors ? <p>There were errors with your tweet:</p> : null}
-            {err}
-
-            <div>
-                <input ref="user" type="text" placeholder="Username" required />
-                <textarea ref="text" placeholder="Your message" required></textarea>
-            </div>
-            <div>
-                <button type="submit">Live Tweet or Die Tryin'</button>
-            </div>
-        </form>
+        const {room} = this.state
+        return <div>
+            <Menu />
+            <hr />
+            <h5>{room.name}</h5>
+            <hr/>
+            <form onSubmit={e => this.submit(e)}>
+                <div>
+                    <label htmlFor="message">Message</label>
+                    <input ref="message" type="text" id="message" placeholder="Type a message to share" />
+                </div>
+                <button type="submit">Send</button>
+            </form>
+            <hr/>
+            {room.messages && room.messages.map(message)}
+        </div>
     }
 }
+
+class Login extends Component {
+    constructor(p){
+        super(p)
+    }
+    submit(e){
+        e.preventDefault()
+        post('/login', 
+            {
+                email: this.refs.email.value,
+                password: this.refs.password.value
+            })
+            .then(x => {
+                window.location.hash = "#"
+            })
+            .catch(e => log(e))
+    }
+    render(){
+        return <div>
+            <Menu />
+            <hr/>
+            <form onSubmit={e => this.submit(e)}>
+                <div>
+                    <label htmlFor="email">Email</label>
+                    <input ref="email" type="email" id="email" placeholder="Your email" />
+                </div>
+                <div>
+                    <label htmlFor="password">Password</label>
+                    <input ref="password" type="password" id="password" placeholder="Your password" />
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    }
+}
+
+const a404 = () => <h2> Page Not Found! U mad? </h2>
+
 const reactApp = () => 
     render(
-        <Layout>
-            <Router history={hashHistory}>
-                <Route path="/" component={Home}/>
-                <Route path="/status/:id" component={TweetPage}/>
-                <Route path="/compose" component={ComposePage}/>
-                <Route path="*" component={Error}/>
-            </Router>
-        </Layout>,
+    <Router history={hashHistory}>
+        <Route path="/" component={Home}/>
+        <Route path="/room/:roomId" component={Room}/>
+        <Route path="/login" component={Login}/>
+        <Route path="*" component={a404}/>
+    </Router>,
     document.querySelector('.app'))
 reactApp()
-// Flow types supported (for pseudo type-checking at runtime)
-// function sum(a: number, b: number): number {
-//     return a+b;
-// }
-//
-// and runtime error checking is built-in
-// sum(1, '2');
