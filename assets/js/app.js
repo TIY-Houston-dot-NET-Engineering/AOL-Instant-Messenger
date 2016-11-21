@@ -51,37 +51,12 @@ const Breadcrumbs = () =>
         )}
     </ul>
 
-const Card = ({title="IM DA BOSS", message="and you ain't", url="#"}) => 
+const Login = ({userName="IM DA BOSS", password="and you ain't"}) => 
     <div className="pt-card pt-elevation-1 pt-interactive">
-        <h5><a href={url}>{title}</a></h5>
-        <p>{message}</p>
+    <input type="text" class="pt-input" placeholder="Username" />
+    <input type="password" class="pt-input" placeholder="Password" />
     </div>
-
-const Table = () => 
-    <table className="pt-table pt-interactive pt-bordered">
-        <thead>
-            <th>Project</th>
-            <th>Description</th>
-            <th>Technologies</th>
-        </thead>
-        <tbody>
-            <tr>
-            <td>Blueprint</td>
-            <td>CSS framework and UI toolkit</td>
-            <td>Sass, TypeScript, React</td>
-            </tr>
-            <tr>
-            <td>TSLint</td>
-            <td>Static analysis linter for TypeScript</td>
-            <td>TypeScript</td>
-            </tr>
-            <tr>
-            <td>Plottable</td>
-            <td>Composable charting library built on top of D3</td>
-            <td>SVG, TypeScript, D3</td>
-            </tr>
-        </tbody>
-    </table>
+   
 
 const Home = () => 
     <div>
@@ -90,14 +65,10 @@ const Home = () =>
         <hr />
         <div className="grid grid-3-600">
             {[
-                {title: "TEST TITLE", message: "TEST MESSAGE"},
-                {title: "TEST TITLE", message: "TEST MESSAGE"},
-                {title: "TEST TITLE", message: "TEST MESSAGE"}
-            ].map(x => [<Card {...x} />, " "] )}
+                {userName: "x", password: "x"}
+            ].map(x => [<Login {...x} />, " "] )}
         </div>
-        <div className="grid">
-            <Table />
-        </div>
+       
     </div>
 
 const reactApp = () => 
