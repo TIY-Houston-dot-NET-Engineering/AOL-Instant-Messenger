@@ -33,55 +33,55 @@ public class HomeController : Controller
         return View("Index", db.Rooms.ToList());
     }
 
-    // [HttpGet("bnb/new")]
-    // public IActionResult CreateBnB() => View("CreateBnB");
+    [HttpGet("room/new")]
+    public IActionResult CreateRoom() => View("CreateRoom");
 
-    // [HttpPost("bnb/new")]
-    // [ValidateAntiForgeryToken]
-    // public IActionResult CreateBnB([FromForm] BnB bnb)
-    // {
-    //     if(!ModelState.IsValid)
-    //         return View("CreateBnB", bnb);
+    [HttpPost("room/new")]
+    //[ValidateAntiForgeryToken]
+    public IActionResult CreateRoom([FromForm] Room room)
+    {
+        if(!ModelState.IsValid)
+            return View("CreateRoom", room);
 
-    //     db.BnBs.Add(bnb);
-    //     db.SaveChanges();
-    //     return Redirect("/");
-    // }
+        db.Rooms.Add(room);
+        db.SaveChanges();
+        return Redirect("/");
+    }
 
-    // [HttpGet("bnb/{id}")]
-    // public async Task<IActionResult> BnB(int id)
-    // {
-    //     BnB item = bnb.Read(id);
-    //     if(item == null) return NotFound();
-    //     return View("BnB", item);
-    // }
+    [HttpGet("room/{id}")]
+    public async Task<IActionResult> Room(int id)
+    {
+        Room item = room.Read(id);
+        if(item == null) return NotFound();
+        return View("Room", item);
+    }
 
-    // [HttpPost("bnb/{id}/messages")]
-    // [ValidateAntiForgeryToken]
-    // public async Task<IActionResult> CreateMessage([FromForm] Message m, int id){
-    //     m.BnB = null;
-    //     string name = (await auth.GetUser(HttpContext))?.Email ?? "NOT PROVIDED";
-    //     m.Visitor = new Visitor { Name = name };
+    [HttpPost("room/{id}/messages")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateMessage([FromForm] Message m, int id){
+        m.Room = null;
+        string name = (await auth.GetUser(HttpContext))?.Email ?? "NOT PROVIDED";
+        m.User = new User { Name = name };
         
-    //     TryValidateModel(m);
+        TryValidateModel(m);
         
-    //     if(ModelState.IsValid){
-    //         db.Messages.Add(m);
-    //         db.SaveChanges();
-    //     }
+        if(ModelState.IsValid){
+            db.Messages.Add(m);
+            db.SaveChanges();
+        }
 
-    //     return Redirect($"/bnb/{id}");
-    // }
+        return Redirect($"/room/{id}");
+    }
 
     [HttpGet("login")]
     [AllowAnonymous]
-    public IActionResult Login() => StatusCode(403);
+    public IActionResult Login() => View("Login");
 
     [HttpPost("login")]
     [AllowAnonymous]
-    // [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login([FromBody] LoginVM user){
-        user.Log();
+     [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login([FromForm] LoginVM user){
+        
         string result = await auth.Login(user.Email, user.Password);
         if(result == null) {
             // HttpContext.User
@@ -95,8 +95,8 @@ public class HomeController : Controller
 
     [HttpPost("register")]
     [AllowAnonymous]
-    // [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register([FromBody] LoginVM user){
+     [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register([FromForm] LoginVM user){
         var errors = await auth.Register(user.Email, user.Password);
         if((errors ?? new List<string>()).Count() == 0){
             return Redirect("/");
@@ -109,7 +109,7 @@ public class HomeController : Controller
     }
 
     [HttpPost("logout")]
-    // [ValidateAntiForgeryToken]
+     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout(){
         await auth.Logout();
         return Redirect("/");

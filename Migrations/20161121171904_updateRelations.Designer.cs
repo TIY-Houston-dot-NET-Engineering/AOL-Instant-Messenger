@@ -8,9 +8,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace aolClone.Migrations
 {
     [DbContext(typeof(DB))]
-    partial class DBModelSnapshot : ModelSnapshot
+    [Migration("20161121171904_updateRelations")]
+    partial class updateRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1");
@@ -20,12 +21,12 @@ namespace aolClone.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("RoomId");
+                    b.Property<int?>("RoomId");
 
                     b.Property<string>("Text")
                         .IsRequired();
 
-                    b.Property<int>("UserId");
+                    b.Property<int?>("UserId");
 
                     b.Property<DateTime>("createdAt");
 
@@ -228,20 +229,18 @@ namespace aolClone.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("AOLUsers");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Message", b =>
                 {
                     b.HasOne("Room", "Room")
                         .WithMany("Messages")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RoomId");
 
                     b.HasOne("User", "User")
                         .WithMany("Messages")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

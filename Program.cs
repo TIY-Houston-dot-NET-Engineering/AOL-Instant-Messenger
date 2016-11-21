@@ -61,7 +61,7 @@ public partial class Handler {
     protected AuthOptions _auth = AuthOptions.Google | AuthOptions.Facebook;
     // --------------------------------------------------------
 
-    public IConfigurationRoot config { get; }
+    public IConfigurationRoot Configuration { get; }  //was config
     private IHostingEnvironment Env;
 
     public Handler(IHostingEnvironment env)
@@ -83,27 +83,27 @@ public partial class Handler {
             builder.AddApplicationInsightsSettings(developerMode: true);
         }
 
-        config = builder.Build();
+        Configuration = builder.Build();
     }
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddApplicationInsightsTelemetry(config);
+        services.AddApplicationInsightsTelemetry(Configuration);
 
         switch(_db){
             case DatabaseOptions.InMemory: 
                 services.AddDbContext<DB>(options => options.UseInMemoryDatabase());
                 break;
             case DatabaseOptions.Sqlite:
-                services.AddDbContext<DB>(options => options.UseSqlite(config.GetConnectionString("Sqlite")));
+                services.AddDbContext<DB>(options => options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
                 break;
             case DatabaseOptions.Postgres:
                 string endpoint = Env.IsDevelopment() ? "Dev" : "Prod";
                 services.AddDbContext<DB>(options =>
                     options.UseNpgsql(
                         _convertConnectionString ? 
-                            ParseConnectionString(config.GetConnectionString($"Postgres:{endpoint}"), "Postgres") :
-                            config.GetConnectionString($"Postgres:{endpoint}")
+                            ParseConnectionString(Configuration.GetConnectionString($"Postgres:{endpoint}"), "Postgres") :
+                            Configuration.GetConnectionString($"Postgres:{endpoint}")
                     ));
                 break;
         }
@@ -117,11 +117,11 @@ public partial class Handler {
                 services.Configure<IdentityOptions>(options =>
                 {
                     // Password settings
-                    options.Password.RequireDigit = true;
-                    options.Password.RequiredLength = 8;
-                    options.Password.RequireNonAlphanumeric = true;
-                    options.Password.RequireUppercase = true;
-                    options.Password.RequireLowercase = true;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 4;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireLowercase = false;
                     
                     // Lockout settings
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
@@ -196,9 +196,9 @@ public partial class Handler {
                 {
                     options.SingleApiVersion(new Info
                     {
-                        Version = config["Swagger:Version"],
-                        Title = config["Swagger:Title"],
-                        Description = config["Swagger:Description"]
+                        Version = Configuration["Swagger:Version"],
+                        Title = Configuration["Swagger:Title"],
+                        Description = Configuration["Swagger:Description"]
                     });
                     options.IgnoreObsoleteActions();
                     options.IgnoreObsoleteProperties();
@@ -288,15 +288,15 @@ public partial class Handler {
         }
 
         Action authfb = () => {
-            var facebookId = config["Auth:Facebook:AppId"];
-            var facebookSecret = config["Auth:Facebook:AppSecret"];
+            var facebookId = Configuration["Auth:Facebook:AppId"];
+            var facebookSecret = Configuration["Auth:Facebook:AppSecret"];
             if (string.IsNullOrWhiteSpace(facebookId) || string.IsNullOrWhiteSpace(facebookSecret)) return;
             app.UseFacebookAuthentication(new FacebookOptions { AppId = facebookId, AppSecret = facebookSecret });
         };
 
         Action authg = () => {
-            var googleId = config["Auth:Google:ClientId"];
-            var googleSecret = config["Auth:Google:ClientSecret"];
+            var googleId = Configuration["Auth:Google:ClientId"];
+            var googleSecret = Configuration["Auth:Google:ClientSecret"];
             if (string.IsNullOrWhiteSpace(googleId) || string.IsNullOrWhiteSpace(googleSecret)) return;
             app.UseGoogleAuthentication(new GoogleOptions { ClientId = googleId, ClientSecret = googleSecret });
         };

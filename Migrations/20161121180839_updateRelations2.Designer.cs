@@ -8,9 +8,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace aolClone.Migrations
 {
     [DbContext(typeof(DB))]
-    partial class DBModelSnapshot : ModelSnapshot
+    [Migration("20161121180839_updateRelations2")]
+    partial class updateRelations2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1");

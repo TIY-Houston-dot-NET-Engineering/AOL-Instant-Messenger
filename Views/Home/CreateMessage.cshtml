@@ -1,0 +1,14 @@
+@model Message
+
+<form asp-controller="Home" asp-action="CreateMessage">
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label asp-for="Text" />
+        <input asp-for="Text" >
+    </div>
+
+    <input asp-for="RoomId" value="@Model.Room.Id" hidden>
+
+    <button type="submit">Share message</button>
+</form>

@@ -1,0 +1,17 @@
+@model IEnumerable<Room>
+
+<h1>aolMsngr</h1>
+
+<hr>
+
+<p>There are currently @Model.Count() Rooms.</p>
+
+<p>Create a <a href="/room/new">new Room</a>.  @*room/new in controller calls the CreateRoom view*@
+
+<div class="grid grid-2-800 grid-3-1024">
+    @foreach(var room in Model){  
+        <a href="/room/@room.Id">   
+            <h5>@room.Name</h5> 
+        </a>  
+    }
+</div>

@@ -17,7 +17,7 @@ public static class Seed
         if(mustMigrate) db.Database.Migrate();
         
         if(db.Rooms.Any()) return;
-        var m = new Message { Text = "Hi", User = new User { Name = "Matt" } };
+        var m = new Message { Text = "RahulGay", User = new User { Name = "Bryan" } };
         var b = new Room { Name = "TIY Houston" };
         b.Messages.Add(m);
         db.Rooms.Add(b);
