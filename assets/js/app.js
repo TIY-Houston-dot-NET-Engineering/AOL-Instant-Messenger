@@ -5,6 +5,8 @@ import React, {Component} from 'react'
 import {render} from 'react-dom'
 import { Router, Route, Link, browserHistory, hashHistory } from 'react-router'
 import * as BLUE from '@blueprintjs/core'
+import Room from './rooms'
+
 
 console.log(BLUE);
 
@@ -36,7 +38,7 @@ const Nav = () =>
         </div>
         <div className="pt-navbar-group pt-align-right">
             <button className="pt-button pt-minimal pt-icon-home">Home</button>
-            <button className="pt-button pt-minimal pt-icon-document">Files</button>
+            <button className="pt-button pt-minimal pt-icon-document"><a href="/#/rooms">Rooms</a></button>
             <span className="pt-navbar-divider"></span>
             <button className="pt-button pt-minimal pt-icon-user"></button>
             <button className="pt-button pt-minimal pt-icon-notifications"></button>
@@ -46,7 +48,7 @@ const Nav = () =>
 
 const Breadcrumbs = () =>
     <ul className="pt-breadcrumbs">
-        {["Home", "About", "Story"].map(x => 
+        {["Home", "About", "Rooms"].map(x => 
             <li><BLUE.Breadcrumb text={x} /></li>
         )}
     </ul>
@@ -56,6 +58,13 @@ const Card = ({title="IM DA BOSS", message="and you ain't", url="#"}) =>
         <h5><a href={url}>{title}</a></h5>
         <p>{message}</p>
     </div>
+
+// const RoomCard = ({title="IM DA BOSS", message="and you ain't", url="#"}) => 
+//     <div className="pt-card pt-elevation-1 pt-interactive">
+//         <h5><a href={url}>{title}</a></h5>
+//         <p>{message}</p>
+//     </div>
+
 
 const Table = () => 
     <table className="pt-table pt-interactive pt-bordered">
@@ -83,6 +92,8 @@ const Table = () =>
         </tbody>
     </table>
 
+
+
 const Home = () => 
     <div>
         <Nav />
@@ -100,10 +111,12 @@ const Home = () =>
         </div>
     </div>
 
+
 const reactApp = () => 
     render(
     <Router history={hashHistory}>
         <Route path="/" component={Home}/>
+        <Route path="/room" component={Room}/>
     </Router>,
     document.querySelector('.app'))
 
