@@ -7,9 +7,10 @@
         <li><a href="/Contact">Contact</a></li>
         @if (SignInManager.IsSignedIn(User)) {
             <li>
-                <form asp-controller="Account" asp-action="Logout">
+                <!--<form asp-controller="Account" asp-action="Logout">
                     <button type="submit">logout</button>
-                </form>
+                </form>-->
+                <a href="/account/logout"><button type="submit">logout</button></a>
             </li>
             <li>
                 Hello @UserManager.GetUserName(User)!

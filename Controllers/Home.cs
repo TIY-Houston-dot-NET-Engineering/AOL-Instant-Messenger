@@ -114,6 +114,12 @@ public class HomeController : Controller
         await auth.Logout();
         return Redirect("/");
     }
+
+    [HttpGetAttribute("About")]
+    public IActionResult About() => View("About");
+
+    [HttpGetAttribute("Contact")]
+    public IActionResult Contact() => View("Contact");
     
 }
 

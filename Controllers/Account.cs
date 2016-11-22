@@ -68,7 +68,7 @@ public class AccountController : Controller
 
         string result = await auth.Login(user.Email, user.Password);
         if(result == null){
-            return Redirect("/account");
+            return Redirect("/account");  //redirect Account
         }
 
         ModelState.AddModelError("", result);
