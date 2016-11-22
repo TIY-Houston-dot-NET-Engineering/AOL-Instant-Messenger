@@ -1,3 +1,30 @@
+# AOL MESSENGER
+We have created a new and improved version of your favorite chatroom board from the 90's. Back when Screen Names were simple, "A/S/L" was the first thing you asked a stranger, and AlL ThE ChIcKs TyPeD lIkE tHiS. Pour up a glass of nostalgia and enjoy the sounds of the dial-up mating call.
+
+# Created With
+This messenger app was created with C#, .Net, JS, & React.
+
+# Look Who's Talking
+Users must register with a handle, email, & password before entering the main lobby of chatrooms. Members are able to either join an existing room or create another room and invite their friends to join. Upon entering any chatroom, you will see your information (handle, avatar, and a tagline of your choice) along with a list of active members that are currently in the same room. Members also have the option to send direct messages to any other member in a private chatroom. All messages will be posted in chronological order with the most recent messages at the bottom of the list. To chat, enter your desired message into the chatbox and press enter to send your message.
+
+
+# Nav Bar
+At the top of each screen, there is a navigation bar with active buttons to take you directly to specific pages.
+
+The 'Home' button will redirect you to the main lobby where you can see a list of all the chatrooms.
+The 'Account' button will lead you to a screen for you to be able to change any of your account settings that you feel are necessary.
+The 'Contact' button takes you to a bit more information about the developers of this app and how to contact them.
+The 'Logout' button will automatically end your chat session, log out of your account and redirect you to the home screen.
+
+# Under Construction
+
+This app is a continuous work in progress. We will continue working out the bugs and adding more features to ensure simplicity and understanding for our members. We appreciate your patience during this time.
+
+
+Cheers.
+
+
+
 # .NET Core Boilerplate
 
 # How to use
