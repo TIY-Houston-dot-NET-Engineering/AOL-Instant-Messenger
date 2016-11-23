@@ -5,18 +5,19 @@ import React, {Component} from 'react'
 import {render} from 'react-dom'
 import { Router, Route, Link, browserHistory, hashHistory } from 'react-router'
 
-const getMessage = async (id) => {
-    let response = await fetch(`/api/message/${id}`)
-    let data = await response.json()
+
+// const getMessage = async (id) => {
+//     let response = await fetch(`/api/message/${id}`)
+//     let data = await response.json()
     
-    console.log(data)
-}
+//     console.log(data)
+// }
 
-const app = () => {
-    getMessage(4);
-}
+// const app = () => {
+//     getMessage(4);
+// }
 
-app();
+// app();
 
 const log = (...a) => console.log(...a)
 
@@ -32,7 +33,7 @@ const get = (url) =>
     })
 
 const post = (url, data) => 
-    fetch(url, { 
+    return fetch(url, { 
         method: 'POST',
         credentials: 'same-origin',
         headers: {'Content-Type': 'application/json'},
@@ -55,7 +56,7 @@ class Home extends Component {
     constructor(p){
         super(p)
         this.state = {
-            room: []
+            rooms: []
         }
     }
     componentDidMount() {
@@ -77,8 +78,8 @@ class Home extends Component {
             <hr/>
             <form onSubmit={e => this.submit(e)}>
                 <div>
-                    <label htmlFor="name">Name of new Room</label>
-                    <input ref="name" type="text" id="name" placeholder="Type a name of the new Room" />
+                    <label htmlFor="name">Name of new Terd</label>
+                    <input ref="name" type="text" id="name" placeholder="Type a name of the new Terd" />
                 </div>
                 <button type="submit">Send</button>
             </form>
@@ -102,27 +103,33 @@ class Room extends Component {
         get(`/api/room/${this.props.params.roomId}`)
             .then(room => this.setState({room}))
     }
+    // componentDidMount() {
+    //     get(`/api/user/${this.props.params.user.id}`)
+    //         .then(user => this.setState({user}))
+    // }
+
     submit(e){
         e.preventDefault()
-        post('/api/message', { text: this.refs.message.value, roomid: this.state.room.id, user: { name: 'gaucho' } })
+        post('/api/message', { text: this.refs.message.value, roomid: this.state.room.id, user: this.user.id})
             .then(x => {
                 const {room} = this.state
                 room.messages.push(x)
                 this.setState({room})
             })
             .catch(e => alert(e))
+            
     }
     render(){
         const {room} = this.state
         return <div>
-            <Menu />
+            <Menu />          
             <hr />
             <h5>{room.name}</h5>
             <hr/>
             <form onSubmit={e => this.submit(e)}>
                 <div>
                     <label htmlFor="message">Message</label>
-                    <input ref="message" type="text" id="message" placeholder="Type a message to share" />
+                    <input ref="message" type="text" id="message" placeholder="Type a message to terd" />
                 </div>
                 <button type="submit">Send</button>
             </form>
@@ -179,3 +186,5 @@ const reactApp = () =>
     </Router>,
     document.querySelector('.app'))
 reactApp()
+
+window.user=user;

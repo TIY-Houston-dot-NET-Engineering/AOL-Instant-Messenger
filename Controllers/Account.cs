@@ -58,6 +58,24 @@ public class AccountController : Controller
         return View("RegisterOrLogin");
     }
 
+ [HttpPost("Login2")]
+    [AllowAnonymous]
+    public async Task<JsonResult> Login2([FromForm] UserView user)
+    {
+        ViewData["Action"] = "Login";
+
+        if (!ModelState.IsValid) return Json(new {success = false}); 
+
+        string result = await auth.Login(user.Email, user.Password);
+        if(result == null){
+            return Json(new {success = false});
+        }
+
+        ModelState.AddModelError("", result);
+        return Json(new {success = true}); 
+    }
+
+
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromForm] UserView user)

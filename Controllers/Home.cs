@@ -37,7 +37,7 @@ public class HomeController : Controller
     public IActionResult CreateRoom() => View("CreateRoom");
 
     [HttpPost("room/new")]
-    //[ValidateAntiForgeryToken]
+    [ValidateAntiForgeryToken]
     public IActionResult CreateRoom([FromForm] Room room)
     {
         if(!ModelState.IsValid)
@@ -75,28 +75,34 @@ public class HomeController : Controller
 
     [HttpGet("login")]
     [AllowAnonymous]
-    public IActionResult Login() => View("Login");
+    public IActionResult Login() => StatusCode(403);
+
+
+
 
     [HttpPost("login")]
     [AllowAnonymous]
-     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login([FromForm] LoginVM user){
-        
+    // [ValidateAntiForgeryToken]
+    public async Task<JsonResult> Login([FromBody] LoginVM user){
+       
         string result = await auth.Login(user.Email, user.Password);
         if(result == null) {
             // HttpContext.User
             // HttpContext.Session["SessionID"]
-            return Redirect("/");
+
+            return Json(new {success = false}); 
+            
         }
         
         ModelState.AddModelError("", result);
-        return View("Login", user);
+        return  Json(new {success = true});
+       // return View("Login", user);
     }
 
     [HttpPost("register")]
     [AllowAnonymous]
-     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register([FromForm] LoginVM user){
+    // [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register([FromBody] LoginVM user){
         var errors = await auth.Register(user.Email, user.Password);
         if((errors ?? new List<string>()).Count() == 0){
             return Redirect("/");
@@ -109,7 +115,7 @@ public class HomeController : Controller
     }
 
     [HttpPost("logout")]
-     [ValidateAntiForgeryToken]
+    // [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout(){
         await auth.Logout();
         return Redirect("/");
